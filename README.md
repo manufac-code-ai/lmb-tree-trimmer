@@ -2,12 +2,6 @@
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
-A directory structure visualization tool that generates token-efficient YAML snapshots of file systems for Large Language Model processing. Part of the LMbridge suite for bridging local documents to Large Language Model systems.
-
-## Note
-
-This repository starts with a single commit to provide a clean, focused version of the project for public sharing.
-
 ## Contents
 
 - [Overview](#overview)
@@ -24,6 +18,8 @@ This repository starts with a single commit to provide a clean, focused version 
 Modern LLMs like ChatGPT or Grok can help organize your life, but they struggle with the complexity of large file systems built over decades of projects. With thousands of folders and files, token limits make direct analysis impossible. This Python tool, designed for macOS, trims your file structure into a simplified YAML export, focusing on folders while ignoring unnecessary files, so you can use an LLM to reorganize or analyze your directory hierarchy.
 
 **Purpose:** Enable LLMs to recommend file system reorganization by providing a token-efficient snapshot of your directory structure, reducing the cognitive overhead of managing decades of complex project data.
+
+Note: This repository starts with a single commit to provide a clean, focused version of the project for public sharing.
 
 ## Quick Start
 

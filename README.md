@@ -4,6 +4,10 @@
 
 A directory structure visualization tool that generates token-efficient YAML snapshots of file systems for Large Language Model processing. Part of the LMbridge suite for bridging local documents to Large Language Model systems.
 
+## Note
+
+This repository starts with a single commit to provide a clean, focused version of the project for public sharing.
+
 ## Contents
 
 - [Overview](#overview)

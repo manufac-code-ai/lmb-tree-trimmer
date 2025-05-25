@@ -19,7 +19,7 @@ Modern LLMs like ChatGPT or Grok can help organize your life, but they struggle 
 
 **Purpose:** Enable LLMs to recommend file system reorganization by providing a token-efficient snapshot of your directory structure, reducing the cognitive overhead of managing decades of complex project data.
 
-Note: This repository starts with a single commit to provide a clean, focused version of the project for public sharing.
+_Note: This repository starts with a single commit to provide a clean, focused version of the project for public sharing._
 
 ## Quick Start
 

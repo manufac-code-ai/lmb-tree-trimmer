@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+.DS_Store
+_out/
+*.pyc
+
+# Local configuration files (user-specific paths)
+config/config_loc.py

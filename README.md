@@ -21,9 +21,9 @@ This repository starts with a single commit to provide a clean, focused version 
 
 ## Overview
 
-LMbridge Tree Trimmer generates hierarchical snapshots of directory structures for LLM processing. It filters out unnecessary files and outputs structured YAML that preserves folder relationships while minimizing token usage.
+Modern LLMs like ChatGPT or Grok can help organize your life, but they struggle with the complexity of large file systems built over decades of projects. With thousands of folders and files, token limits make direct analysis impossible. This Python tool, designed for macOS, trims your file structure into a simplified YAML export, focusing on folders while ignoring unnecessary files, so you can use an LLM to reorganize or analyze your directory hierarchy.
 
-**Purpose:** Analyze file system organization and provide LLMs with structured directory information for cleanup and reorganization recommendations.
+**Purpose:** Enable LLMs to recommend file system reorganization by providing a token-efficient snapshot of your directory structure, reducing the cognitive overhead of managing decades of complex project data.
 
 ## Quick Start
 

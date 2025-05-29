@@ -16,7 +16,7 @@ def load_ignore_types():
         with open(IGNORE_TYPES_FILE, 'r') as f:
             for line in f:
                 line = line.strip().lower()
-                if line and not line.startswith('//'):
+                if line and not line.startswith('#'):  # Changed from '//' to '#'
                     ignore_types.append(line)
     
     return ignore_types

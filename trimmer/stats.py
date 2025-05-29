@@ -7,16 +7,15 @@ def print_stats(stats, tokens, output_size):
     print(f"  Folders: {stats['raw_total_folders']}")
     print(f"  Files: {stats['raw_total_files']}")
     print("\nFiltered Totals (displayed in output):")
-    print(f"  Folders: {stats['raw_total_folders']}")  # Folders aren't filtered further.
-    print(f"  Files: {stats['filtered_total_files']}")
+    print(f"  Folders: {stats['raw_total_folders']}")
+    print(f"  Files: {stats.get('filtered_files', 'N/A')}")
     print("Ignored:")
-    print(f"  By type: {stats['ignored_by_type']}")
-    print(f"  Icon files: {stats['ignored_icons']}")
-    print(f"  Hidden files/folders: {stats.get('ignored_hidden', 0)}")
+    # Add safe access to prevent KeyError
+    if 'ignored_by_type' in stats:
+        print(f"  By type: {stats['ignored_by_type']}")
+    else:
+        print(f"  By type: N/A")
     
-    # Display alias detection stats if available
-    if 'detected_aliases' in stats:
-        print(f"  Detected aliases: {stats['detected_aliases']}")
-        
-    print(f"Token Usage (tree format): {tokens} tokens ({round(100 * tokens / TOKEN_LIMIT, 1)}% of limit)")
-    print(f"Output size: {output_size} bytes")
+    print(f"\nEstimated tokens: {tokens:,}")
+    print(f"Output size: {output_size:,} bytes")
+    print(f"Token usage: {(tokens/TOKEN_LIMIT)*100:.1f}% of {TOKEN_LIMIT:,} limit")

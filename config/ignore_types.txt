@@ -1,6 +1,0 @@
-.ds_store
-.jpg
-.jpeg
-.png
-.heic
-.gif

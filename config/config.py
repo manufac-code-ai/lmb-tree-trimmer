@@ -20,7 +20,7 @@ if 'OUTPUT_DIR' not in locals():
     OUTPUT_DIR = '_out'
 
 # Ignore file for file types to exclude
-IGNORE_TYPES_FILE = 'config/ignore_types.txt'
+IGNORE_TYPES_FILE = 'config/ignore_types.conf'
 
 # Formatting and behavior toggles
 USE_TREE_FORMAT = True        # True = tree view (hierarchical), False = flat path list

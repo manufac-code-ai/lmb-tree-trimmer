@@ -3,7 +3,7 @@ File system utilities for directory traversal and path manipulation.
 Focused on directory structure generation.
 """
 import os
-from config.config import COLLAPSE_CHAINS, MAX_FILES_DISPLAY, IGNORE_HIDDEN
+from config.config import COLLAPSE_CHAINS, MAX_FILES_DISPLAY, IGNORE_HIDDEN, MAX_SCAN_DEPTH
 
 # Import functionality from other modules
 from .sorting import finder_sort_key
@@ -147,18 +147,19 @@ def process_directory(path, ignore_types, current_indent=0, parent_path=""):
             flat_lines.append(os.path.normpath(os.path.join(path, entry)))
             stats['filtered_total_files'] = stats.get('filtered_total_files', 0) + 1
 
-    # Process subdirectories.
-    try:
-        subdirs = sorted([d for d in entries if os.path.isdir(os.path.join(path, d)) and 
-                         not (IGNORE_HIDDEN and d.startswith('.'))], 
-                         key=finder_sort_key)
-    except PermissionError:
-        subdirs = []
-    for sub in subdirs:
-        sub_path = os.path.join(path, sub)
-        sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, current_indent + 1, path)
-        lines.extend(sub_lines)
-        flat_lines.extend(sub_flat)
-        for key, value in sub_stats.items():
-            stats[key] = stats.get(key, 0) + value
+    # Process subdirectories - ADD DEPTH CHECK HERE
+    if MAX_SCAN_DEPTH == 0 or current_indent < MAX_SCAN_DEPTH:
+        try:
+            subdirs = sorted([d for d in entries if os.path.isdir(os.path.join(path, d)) and 
+                             not (IGNORE_HIDDEN and d.startswith('.'))], 
+                             key=finder_sort_key)
+        except PermissionError:
+            subdirs = []
+        for sub in subdirs:
+            sub_path = os.path.join(path, sub)
+            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, current_indent + 1, path)
+            lines.extend(sub_lines)
+            flat_lines.extend(sub_flat)
+            for key, value in sub_stats.items():
+                stats[key] = stats.get(key, 0) + value
     return lines, flat_lines, stats

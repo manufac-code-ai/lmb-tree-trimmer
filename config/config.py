@@ -21,6 +21,7 @@ if 'OUTPUT_DIR' not in locals():
 
 # Ignore file for file types to exclude
 IGNORE_TYPES_FILE = 'config/ignore_types.conf'
+IGNORE_PATTERNS_FILE = 'config/ignore_pat.conf'
 
 # Formatting and behavior toggles
 USE_TREE_FORMAT = True        # True = tree view (hierarchical), False = flat path list
@@ -40,4 +41,4 @@ MAX_FILES_DISPLAY = 0         # If exceeded, output summary instead
                               # Set to 0 to show only folders (no files)
 
 # Maximum depth to scan (0 = unlimited, 1 = only root level, 2 = root + 1 level, etc.)
-MAX_SCAN_DEPTH = 0  # 0 means unlimited depth
+MAX_SCAN_DEPTH = 5  # 0 means unlimited depth

@@ -2,7 +2,7 @@
 General utility functions for the folder structure scanner.
 """
 import os
-from config.config import ICON_ELIMINATION, IGNORE_TYPES_FILE
+from config.config import ICON_ELIMINATION, IGNORE_TYPES_FILE, IGNORE_PATTERNS_FILE  # Add IGNORE_PATTERNS_FILE
 
 def load_ignore_types():
     """
@@ -21,8 +21,22 @@ def load_ignore_types():
     
     return ignore_types
 
+def load_ignore_patterns():
+    """Load ignore patterns file from disk."""
+    ignore_patterns = []
+    if os.path.exists(IGNORE_PATTERNS_FILE):
+        with open(IGNORE_PATTERNS_FILE, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    ignore_patterns.append(line)
+    return ignore_patterns
+
 def initial_count(source_dir):
-    """Perform a raw count of files and folders in the specified directory."""
+    """Perform a raw count of files and folders, respecting ignore patterns."""
+    from .utils import load_ignore_patterns  # Import here to avoid circular imports
+    ignore_patterns = load_ignore_patterns()
+    
     stats = {
         'total_folders': 0,
         'total_files': 0,
@@ -32,6 +46,9 @@ def initial_count(source_dir):
     }
 
     for root, dirs, files in os.walk(source_dir):
+        # Remove ignored directories from dirs list (modifies os.walk behavior)
+        dirs[:] = [d for d in dirs if not any(pattern in d for pattern in ignore_patterns)]
+        
         stats['total_folders'] += len(dirs)
         stats['total_files'] += len(files)
         for file in files:

@@ -56,7 +56,7 @@ def collapse_dirs(path, ignore_types, chain_so_far=None):
     return collapsed, path
 
 
-def process_directory(path, ignore_types, current_indent=0, parent_path=""):
+def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path=""):  # Add ignore_patterns parameter
     """Process a directory and return formatted lines for tree output."""
     # Get the directory name
     basename = os.path.basename(path)
@@ -156,8 +156,11 @@ def process_directory(path, ignore_types, current_indent=0, parent_path=""):
         except PermissionError:
             subdirs = []
         for sub in subdirs:
+            # Check if directory matches ignore patterns
+            if any(pattern in sub for pattern in ignore_patterns):  # Now uses the passed parameter
+                continue  # Skip this directory
             sub_path = os.path.join(path, sub)
-            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, current_indent + 1, path)
+            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path)  # Pass ignore_patterns
             lines.extend(sub_lines)
             flat_lines.extend(sub_flat)
             for key, value in sub_stats.items():

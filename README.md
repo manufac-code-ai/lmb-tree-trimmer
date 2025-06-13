@@ -2,6 +2,8 @@
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
+A directory structure visualization tool that generates token-efficient YAML snapshots of file systems for Large Language Model processing. Part of the LMbridge suite for bridging local documents to Large Language Model systems.
+
 ## Contents
 
 - [Overview](#overview)
@@ -15,9 +17,11 @@
 
 ## Overview
 
-Modern LLMs like ChatGPT or Grok can help organize your life, but they struggle with the complexity of large file systems built over decades of projects. With thousands of folders and files, token limits make direct analysis impossible. This Python tool, designed for macOS, trims your file structure into a simplified YAML export, focusing on folders while ignoring unnecessary files, so you can use an LLM to reorganize or analyze your directory hierarchy.
+LMbridge Tree Trimmer generates hierarchical snapshots of directory structures for LLM processing. It filters out unnecessary files and outputs structured YAML that preserves folder relationships while minimizing token usage.
 
-**Purpose:** Enable LLMs to recommend file system reorganization by providing a token-efficient snapshot of your directory structure, reducing the cognitive overhead of managing decades of complex project data.
+LLMs struggle with the complexity of large file systems built over decades of projects. With thousands of folders and files, token limits make direct analysis impossible. This tool trims file structure into simplified YAML exports, focusing on folders while ignoring unnecessary files, enabling LLMs to analyze and recommend directory reorganization.
+
+**Purpose:** Analyze file system organization and provide LLMs with structured directory information for cleanup and reorganization recommendations.
 
 _Note: This repository starts with a single commit to provide a clean, focused version of the project for public sharing._
 
@@ -42,6 +46,7 @@ ls _out/
 
 - **YAML Output**: Converts directory structures to machine-readable YAML format
 - **File Filtering**: Configurable limits on files displayed per directory
+- **Pattern Exclusion**: Ignores common bloat directories (node_modules, build, dist, etc.)
 - **macOS Compatibility**: Handles aliases and system-specific file types
 - **Hidden File Control**: Option to exclude dot-files and system directories
 
@@ -56,6 +61,7 @@ ls _out/
 
 - **Private Local Settings**: Git-ignored configuration for personal directory paths
 - **File Type Exclusions**: Customizable lists for filtering unwanted file types
+- **Directory Pattern Exclusions**: Skip common package and build directories
 - **Display Controls**: Adjustable file limits with summary fallbacks when exceeded
 - **Format Options**: Tree hierarchy or flat path listing modes
 
@@ -127,9 +133,12 @@ USE_TREE_FORMAT = True      # Hierarchical vs flat output
 
 # Token management
 TOKEN_LIMIT = 75000         # Target limit for LLM context windows
+
+# Depth limiting
+MAX_SCAN_DEPTH = 0          # 0 = unlimited, 5 = stop at 5 levels deep
 ```
 
-### File Type Filtering (`config/ignore_types.txt`)
+### File Type Filtering (`config/ignore_types.conf`)
 
 Customize which file types to exclude:
 
@@ -140,6 +149,20 @@ Customize which file types to exclude:
 .png
 .heic
 .gif
+```
+
+### Directory Pattern Filtering (`config/ignore_pat.conf`)
+
+Exclude common bloat directories:
+
+```
+node_modules
+dist
+build
+coverage
+.cache
+.temp
+vendor
 ```
 
 ## Output Format
@@ -209,7 +232,8 @@ lmb-tree-trimmer/
 ├── config/
 │   ├── config.py           # Main configuration
 │   ├── config_loc.py       # Local paths (git-ignored)
-│   └── ignore_types.txt    # File types to exclude
+│   ├── ignore_types.conf   # File extensions to exclude
+│   └── ignore_pat.conf     # Directory patterns to ignore
 ├── trimmer/                # Core package
 │   ├── __init__.py         # Package exports
 │   ├── files.py            # File operations and alias detection

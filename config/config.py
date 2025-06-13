@@ -25,7 +25,7 @@ IGNORE_PATTERNS_FILE = 'config/ignore_pat.conf'
 
 # Formatting and behavior toggles
 USE_TREE_FORMAT = True        # True = tree view (hierarchical), False = flat path list
-COLLAPSE_CHAINS = True        # If True, collapse chains of single-child folders
+COLLAPSE_CHAINS = False        # If True, collapse chains of single-child folders
 
 # Token estimation (used for percentage of ChatGPT project limit)
 TOKEN_LIMIT = 75000
@@ -41,4 +41,4 @@ MAX_FILES_DISPLAY = 0         # If exceeded, output summary instead
                               # Set to 0 to show only folders (no files)
 
 # Maximum depth to scan (0 = unlimited, 1 = only root level, 2 = root + 1 level, etc.)
-MAX_SCAN_DEPTH = 5  # 0 means unlimited depth
+MAX_SCAN_DEPTH = 7  # 0 means unlimited depth

@@ -42,3 +42,15 @@ MAX_FILES_DISPLAY = 0         # If exceeded, output summary instead
 
 # Maximum depth to scan (0 = unlimited, 1 = only root level, 2 = root + 1 level, etc.)
 MAX_SCAN_DEPTH = 4  # 0 means unlimited depth
+
+# Repository detection settings
+REPO_TYPES = {
+    'git': ['.git'],
+    'mercurial': ['.hg'],
+    'subversion': ['.svn'],
+    'bazaar': ['.bzr'],
+    'fossil': ['.fslckout', '_FOSSIL_'],
+    'darcs': ['_darcs'],
+    'cvs': ['CVS'],
+    'rcs': ['RCS']
+}

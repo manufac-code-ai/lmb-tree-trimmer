@@ -15,6 +15,10 @@ def print_stats(stats, tokens, output_size):
         print(f"  By type: {stats['ignored_by_type']}")
     else:
         print(f"  By type: N/A")
+    if 'repos_detected' in stats:
+        print(f"  Repos detected: {stats['repos_detected']}")
+    else:
+        print(f"  Repos detected: N/A")
     
     print(f"\nEstimated tokens: {tokens:,}")
     print(f"Output size: {output_size:,} bytes")

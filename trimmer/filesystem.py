@@ -3,11 +3,11 @@ File system utilities for directory traversal and path manipulation.
 Focused on directory structure generation.
 """
 import os
-from config.config import COLLAPSE_CHAINS, MAX_FILES_DISPLAY, IGNORE_HIDDEN, MAX_SCAN_DEPTH
+from config.config import COLLAPSE_CHAINS, MAX_FILES_DISPLAY, IGNORE_HIDDEN, MAX_SCAN_DEPTH, REPO_TYPES
 
 # Import functionality from other modules
 from .sorting import finder_sort_key
-from .files import is_alias, is_ignored_file
+from .files import is_alias, is_ignored_file, is_repo
 
 def collapse_dirs(path, ignore_types, chain_so_far=None):
     """Collapse chains of single-folder directories."""
@@ -56,7 +56,7 @@ def collapse_dirs(path, ignore_types, chain_so_far=None):
     return collapsed, path
 
 
-def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path=""):  # Add ignore_patterns parameter
+def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path="", enable_repo=False):  # Add enable_repo parameter
     """Process a directory and return formatted lines for tree output."""
     # Get the directory name
     basename = os.path.basename(path)
@@ -156,11 +156,32 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
         except PermissionError:
             subdirs = []
         for sub in subdirs:
-            # Check if directory matches ignore patterns
-            if any(pattern in sub for pattern in ignore_patterns):  # Now uses the passed parameter
-                continue  # Skip this directory
             sub_path = os.path.join(path, sub)
-            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path)  # Pass ignore_patterns
+            
+            # Check if repo detection is enabled and this is a repository
+            if enable_repo:
+                is_repository, repo_type = is_repo(sub_path)
+                if is_repository:
+                    # Mark as repository and continue recursing to find nested repos
+                    repo_name = f"{sub}.repo"
+                    lines.append(f"{indent}  {repo_name}/")
+                    flat_lines.append(os.path.normpath(sub_path) + '/')
+                    stats['repos_detected'] = stats.get('repos_detected', 0) + 1
+                    
+                    # Recurse into the repo to detect nested repos
+                    sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo)
+                    lines.extend(sub_lines)
+                    flat_lines.extend(sub_flat)
+                    for key, value in sub_stats.items():
+                        stats[key] = stats.get(key, 0) + value
+                    continue
+            
+            # Not a repo (or repo detection disabled), check ignore patterns
+            if any(pattern in sub for pattern in ignore_patterns):
+                continue  # Skip this directory
+            
+            # Recurse normally
+            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo)
             lines.extend(sub_lines)
             flat_lines.extend(sub_flat)
             for key, value in sub_stats.items():

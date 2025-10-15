@@ -3,7 +3,7 @@ File-specific utilities for handling file types, aliases, and filtering.
 """
 import os
 import xattr
-from config.config import ICON_ELIMINATION, IGNORE_HIDDEN  # Add IGNORE_HIDDEN here
+from config.config import ICON_ELIMINATION, IGNORE_HIDDEN, REPO_TYPES  # Add IGNORE_HIDDEN here
 
 def is_alias(filepath):
     """
@@ -48,4 +48,26 @@ def is_ignored_file(filename, ignore_types):
     if ext in ignore_types:
         return True, "type"
         
+    return False, None
+
+def is_repo(dirpath):
+    """
+    Check if a directory is a repository by looking for repository markers.
+    
+    Args:
+        dirpath: Path to the directory to check
+        
+    Returns:
+        tuple: (is_repo, repo_type) where is_repo is True if it's a repo,
+               and repo_type is the type of repository (e.g., 'git', 'hg')
+    """
+    if not os.path.isdir(dirpath):
+        return False, None
+        
+    for repo_type, markers in REPO_TYPES.items():
+        for marker in markers:
+            marker_path = os.path.join(dirpath, marker)
+            if os.path.exists(marker_path):
+                return True, repo_type
+                
     return False, None

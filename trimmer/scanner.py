@@ -7,7 +7,7 @@ import os
 from .filesystem import process_directory
 from .utils import initial_count as utils_initial_count
 
-def scan_directory(source_dir, ignore_types, ignore_patterns):  # Add ignore_patterns parameter
+def scan_directory(source_dir, ignore_types, ignore_patterns, enable_repo=False):  # Add enable_repo parameter
     """
     Scan a directory and return formatted tree and flat views.
     
@@ -21,7 +21,7 @@ def scan_directory(source_dir, ignore_types, ignore_patterns):  # Add ignore_pat
     stats = {}
     
     # Process the directory structure
-    tree_lines, flat_lines, stats = process_directory(source_dir, ignore_types, ignore_patterns)
+    tree_lines, flat_lines, stats = process_directory(source_dir, ignore_types, ignore_patterns, enable_repo=enable_repo)
     
     # Return both formats and stats
     return tree_lines, flat_lines, stats

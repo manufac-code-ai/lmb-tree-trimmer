@@ -2,6 +2,7 @@
 
 # Standard library imports
 import os
+import argparse
 from datetime import datetime
 
 # Local configuration imports
@@ -18,12 +19,16 @@ from trimmer.stats import print_stats
 from trimmer.utils import load_ignore_types, load_ignore_patterns  # Add load_ignore_patterns
 
 def main():
+    parser = argparse.ArgumentParser(description="Generate directory structure snapshots.")
+    parser.add_argument('--repo', action='store_true', help="Enable repository detection mode")
+    args = parser.parse_args()
+
     # Load ignore types and patterns
     ignore_types = load_ignore_types()
     ignore_patterns = load_ignore_patterns()  # Add this line
 
     # Perform filtered scan
-    tree_lines, flat_lines, filtered_stats = scan_directory(SOURCE_DIR, ignore_types, ignore_patterns)  # Pass both
+    tree_lines, flat_lines, filtered_stats = scan_directory(SOURCE_DIR, ignore_types, ignore_patterns, args.repo)  # Pass repo flag
 
     # Format output
     tree_text = format_tree_output(tree_lines)

@@ -56,7 +56,7 @@ def collapse_dirs(path, ignore_types, chain_so_far=None):
     return collapsed, path
 
 
-def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path="", enable_repo=False):  # Add enable_repo parameter
+def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path="", enable_repo=False, inside_repo=False):  # Add enable_repo and inside_repo parameters
     """Process a directory and return formatted lines for tree output."""
     # Get the directory name
     basename = os.path.basename(path)
@@ -81,14 +81,16 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
             flat_lines.append(os.path.normpath(final_dir) + '/')
             path = final_dir  # Continue from the collapsed end.
         else:
+            if not inside_repo:
+                folder_name = os.path.basename(path)
+                lines.append(f"{indent}{folder_name}/")
+                flat_lines.append(norm_path + '/')
+    else:
+        indent = '  ' * current_indent
+        if not inside_repo:
             folder_name = os.path.basename(path)
             lines.append(f"{indent}{folder_name}/")
             flat_lines.append(norm_path + '/')
-    else:
-        indent = '  ' * current_indent
-        folder_name = os.path.basename(path)
-        lines.append(f"{indent}{folder_name}/")
-        flat_lines.append(norm_path + '/')
 
     # Process files in this directory.
     try:
@@ -168,8 +170,8 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
                     flat_lines.append(os.path.normpath(sub_path) + '/')
                     stats['repos_detected'] = stats.get('repos_detected', 0) + 1
                     
-                    # Recurse into the repo to detect nested repos
-                    sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo)
+                    # Recurse into the repo to detect nested repos, with inside_repo=True
+                    sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo, inside_repo=True)
                     lines.extend(sub_lines)
                     flat_lines.extend(sub_flat)
                     for key, value in sub_stats.items():
@@ -181,7 +183,7 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
                 continue  # Skip this directory
             
             # Recurse normally
-            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo)
+            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo, inside_repo)
             lines.extend(sub_lines)
             flat_lines.extend(sub_flat)
             for key, value in sub_stats.items():

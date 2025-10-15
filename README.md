@@ -31,6 +31,9 @@ _Note: This repository starts with a single commit to provide a clean, focused v
 # Generate directory structure with default settings
 python treetrim.py
 
+# Enable repository detection mode to mark git repos
+python treetrim.py --repo
+
 # Customize source directory in config/config_loc.py
 echo 'SOURCE_DIR = "/your/target/directory"' > config/config_loc.py
 python treetrim.py
@@ -49,12 +52,14 @@ ls _out/
 - **Pattern Exclusion**: Ignores common bloat directories (node_modules, build, dist, etc.)
 - **macOS Compatibility**: Handles aliases and system-specific file types
 - **Hidden File Control**: Option to exclude dot-files and system directories
+- **Repository Detection**: Optional mode to identify and mark version control repositories
 
 ### Output Structure
 
 - **Hierarchical Format**: Preserves folder relationships in nested YAML
 - **Finder Sorting**: Maintains macOS file ordering in output
 - **Alias Identification**: Marks macOS aliases for clear differentiation
+- **Repository Marking**: In repo mode, marks detected repositories with `.repo` suffix
 - **Processing Statistics**: Reports on files scanned, filtered, and token counts
 
 ### Configuration Options
@@ -95,9 +100,18 @@ ls _out/
 python treetrim.py
 ```
 
+### Repository Detection Mode
+
+```bash
+# Enable repository detection to identify and mark version control directories
+python treetrim.py --repo
+```
+
+This mode detects git repositories (and other VCS types) by their marker files (e.g., `.git` folders) and marks them with a `.repo` suffix in the output. Repository internals are not expanded to keep snapshots clean and focused on structure.
+
 ### Command Line Options
 
-Currently operates via configuration file settings. See [Configuration](#configuration) for customization options.
+- `--repo`: Enable repository detection mode (optional, off by default)
 
 ## Configuration
 
@@ -136,7 +150,15 @@ TOKEN_LIMIT = 75000         # Target limit for LLM context windows
 
 # Depth limiting
 MAX_SCAN_DEPTH = 0          # 0 = unlimited, 5 = stop at 5 levels deep
+
+# Repository detection (command-line controlled)
+# REPO_TYPES defines supported version control systems
 ```
+
+**Note on Repository Mode:** When using `--repo`, some configuration settings are automatically overridden for compatibility:
+- Directory ignore patterns (from `ignore_pat.conf`) are bypassed for known repository markers (e.g., `.git` folders) to allow detection
+- Repository internals are not displayed, regardless of `MAX_FILES_DISPLAY` settings
+- Hidden file controls still apply to non-repository directories
 
 ### File Type Filtering (`config/ignore_types.conf`)
 
@@ -195,6 +217,15 @@ Projects:
         - styles.css
 ```
 
+With repository detection enabled (`--repo`), repositories are marked:
+
+```yaml
+Projects:
+  my-app: {}
+  my-app.repo: {}  # Detected git repository
+  docs: {}
+```
+
 ### Output Files
 
 - **Filename Format**: `YYMMDD-HHMM <source folder name> structure_snapshot.yaml`
@@ -207,6 +238,7 @@ Projects:
 - **File Grouping**: Files listed under parent directories as YAML arrays
 - **Empty Folder Notation**: `{}` indicates folders with no visible children
 - **Alias Detection**: macOS aliases marked with `.alias` extension in output
+- **Repository Detection**: Optional mode marks version control repositories with `.repo` suffix
 
 ## Integration with LMbridge Suite
 
@@ -220,9 +252,12 @@ Tree Trimmer works as part of the LMbridge document processing ecosystem for fil
 # 1. Generate structure snapshot for analysis
 python treetrim.py
 
-# 2. Review YAML output with LLM for organization recommendations
-# 3. Reorganize files and directories based on insights
-# 4. Re-run Tree Trimmer to verify improved structure
+# 2. For repository-heavy directories, use repo detection
+python treetrim.py --repo
+
+# 3. Review YAML output with LLM for organization recommendations
+# 4. Reorganize files and directories based on insights
+# 5. Re-run Tree Trimmer to verify improved structure
 ```
 
 ## Project Structure
@@ -262,5 +297,6 @@ lmb-tree-trimmer/
 - **Performance**: Handles directories with thousands of files
 - **Token Considerations**: Output designed for LLM context windows
 - **Privacy**: Local configuration system keeps personal paths out of version control
+- **Repository Mode**: Optional feature for identifying version control directories; overrides some ignore settings for detection
 
 Tree Trimmer provides structured visibility into file system organization for LLM-assisted document management and directory optimization.

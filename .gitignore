@@ -7,4 +7,6 @@ _out/
 # Local configuration files (user-specific paths)
 config/config_loc.py
 
-_other/
+# Diff output and app
+_DIFF_OUT/
+difftrim.py

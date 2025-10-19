@@ -10,8 +10,8 @@ LMbridge Tree Trimmer is a Python-based directory structure visualization tool d
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   treetrim.py   │───▶│   trimmer/      │───▶│   _out/         │
-│   (Entry Point) │    │   (Core Logic)  │    │   (Output)      │
+│   treetrim.py   │───▶│   trimmer/      │───▶│   _output/       │
+│   (Entry Point) │    │   (Core Logic)  │    │   (Output)       │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                               │
                               ▼
@@ -41,7 +41,7 @@ lmb-tree-trimmer/
 │   ├── ignore_types.conf   # File extension filters
 │   └── ignore_pat.conf     # Directory pattern filters
 ├── _docs/                   # Documentation
-├── _out/                    # Generated snapshots
+├── _output/                 # Generated snapshots
 └── requirements.txt         # Python dependencies
 ```
 
@@ -72,7 +72,7 @@ lmb-tree-trimmer/
 5. **Output Generation**
    - `formatter.py` converts processed data to YAML
    - `stats.py` calculates and reports processing metrics
-   - Write timestamped file to `_out/` directory
+   - Write timestamped file to `_output/` directory
 
 ### Key Data Structures
 

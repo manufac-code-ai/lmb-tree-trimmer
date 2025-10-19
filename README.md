@@ -39,7 +39,7 @@ echo 'SOURCE_DIR = "/your/target/directory"' > config/config_loc.py
 python treetrim.py
 
 # View generated YAML structure
-ls _out/
+ls _output/
 # Example: 250524-1341 MyProject structure_snapshot.yaml
 ```
 
@@ -123,8 +123,8 @@ Create `config/config_loc.py` for your personal directory paths:
 # Local source directory
 SOURCE_DIR = "/Users/yourname/Documents/ProjectFolder"
 
-# Optional: Custom output directory (defaults to "_out")
-OUTPUT_DIR = "/path/to/custom/_out"
+# Optional: Custom output directory (defaults to "_output")
+OUTPUT_DIR = "/path/to/custom/_output"
 ```
 
 This file is automatically ignored by git to keep your local paths private.
@@ -229,7 +229,7 @@ Projects:
 ### Output Files
 
 - **Filename Format**: `YYMMDD-HHMM <source folder name> structure_snapshot.yaml`
-- **Location**: `_out/` directory (configurable)
+- **Location**: `_output/` directory (configurable)
 - **Statistics**: Console output shows processing summary and token usage
 
 ### Key Features
@@ -278,7 +278,7 @@ lmb-tree-trimmer/
 │   ├── sorting.py          # Finder-compatible sorting
 │   ├── stats.py            # Statistics reporting
 │   └── utils.py            # Utility functions
-├── _out/                   # Generated snapshots
+├── _output/                 # Generated snapshots
 ├── treetrim.py             # Application entry point
 ├── requirements.txt        # Python dependencies
 └── README.md               # Documentation (this file)

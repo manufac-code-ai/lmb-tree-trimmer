@@ -1,12 +1,11 @@
 .venv/
 __pycache__/
 .DS_Store
-_out/
+_output/
 *.pyc
 
 # Local configuration files (user-specific paths)
 config/config_loc.py
 
 # Diff output and app
-_DIFF_OUT/
-difftrim.py
+_tools/

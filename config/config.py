@@ -17,7 +17,7 @@ except ImportError:
 
 # If OUTPUT_DIR wasn't defined in local config, use default
 if 'OUTPUT_DIR' not in locals():
-    OUTPUT_DIR = '_out'
+    OUTPUT_DIR = '_output'
 
 # Ignore file for file types to exclude
 IGNORE_TYPES_FILE = 'config/ignore_types.conf'

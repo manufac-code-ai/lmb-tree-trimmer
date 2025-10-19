@@ -1,0 +1,13 @@
+{
+  "python.defaultInterpreterPath": "/Users/stevenbrown/swd_storage/VCS_loc_gh/gh_loc_2_code-ai/LMbridge/lmb-tree-trimmer/.venv/bin/python",
+  "python.experiments.enabled": false,
+  "python.experiments.optOutFrom": [
+    "All"
+  ],
+  "python.locator": "js",
+  "python.logging.level": "debug",
+  "files.exclude": {
+    "trimmer/__pycache__": true,
+    "config/__pycache__": true
+  }
+}

@@ -62,11 +62,13 @@ lmb-tree-trimmer/
 3. **File Processing**
    - `filesystem.py` processes each directory entry
    - `files.py` handles file type detection and alias identification
+   - `files.py` detects repositories in zip archives when `--repo` enabled
    - Apply filtering based on ignore patterns and configuration
 
 4. **Repository Detection (Optional)**
-   - When `--repo` flag is used, detect VCS directories
-   - Mark repositories with `.repo` suffix
+   - When `--repo` flag is used, detect VCS directories and archives
+   - Mark directory repositories with `.repo` suffix
+   - Mark archive repositories with `.repo.zip` suffix
    - Skip repository internals for clean output
 
 5. **Output Generation**
@@ -106,7 +108,11 @@ lmb-tree-trimmer/
 #### files.py
 - File type and extension checking
 - macOS alias detection using xattr
-- Repository marker identification
+- Repository marker identification (directories)
+- Repository detection in zip archives (using Python zipfile module)
+  - Metadata-only inspection (no file extraction)
+  - Reuses REPO_TYPES configuration
+  - Graceful error handling for corrupted/inaccessible archives
 
 #### formatter.py
 - YAML structure generation
@@ -158,8 +164,12 @@ lmb-tree-trimmer/
 ### Repository Detection
 - **VCS Recognition**: Identifies git, mercurial, subversion repositories
 - **Marker-Based Detection**: Uses standard VCS directory markers
+- **Dual Format Support**: Detects repos in both directories and zip archives
+  - Directory repos: Marked with `.repo` suffix
+  - Archive repos: Marked with `.repo.zip` suffix
+  - Archive scanning uses metadata-only inspection (no extraction)
 - **Clean Output**: Marks repos without expanding internals
-- **Nested Support**: Detects repositories within repositories
+- **Nested Support**: Detects repositories within repositories (directories only)
 
 ### Output Optimization
 - **Token Efficiency**: Designed for LLM context windows
@@ -204,6 +214,7 @@ When `IGNORE_HIDDEN = True`:
 - **Python 3.7+**: Core language support
 - **PyYAML**: YAML output generation
 - **xattr**: macOS extended attributes for alias detection
+- **zipfile**: Standard library module for archive inspection (repo detection in zips)
 
 ## Integration Points
 

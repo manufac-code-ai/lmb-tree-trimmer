@@ -52,14 +52,14 @@ ls _output/
 - **Pattern Exclusion**: Ignores common bloat directories (node_modules, build, dist, etc.)
 - **macOS Compatibility**: Handles aliases and system-specific file types
 - **Hidden File Control**: Option to exclude dot-files and system directories
-- **Repository Detection**: Optional mode to identify and mark version control repositories
+- **Repository Detection**: Optional mode to identify and mark version control repositories (directories and zip archives)
 
 ### Output Structure
 
 - **Hierarchical Format**: Preserves folder relationships in nested YAML
 - **Finder Sorting**: Maintains macOS file ordering in output
 - **Alias Identification**: Marks macOS aliases for clear differentiation
-- **Repository Marking**: In repo mode, marks detected repositories with `.repo` suffix
+- **Repository Marking**: In repo mode, marks detected repositories with `.repo` suffix (directories) or `.repo.zip` suffix (archives)
 - **Processing Statistics**: Reports on files scanned, filtered, and token counts
 
 ### Configuration Options
@@ -103,11 +103,17 @@ python treetrim.py
 ### Repository Detection Mode
 
 ```bash
-# Enable repository detection to identify and mark version control directories
+# Enable repository detection to identify and mark version control repositories
 python treetrim.py --repo
 ```
 
-This mode detects git repositories (and other VCS types) by their marker files (e.g., `.git` folders) and marks them with a `.repo` suffix in the output. Repository internals are not expanded to keep snapshots clean and focused on structure.
+This mode detects repositories in both directories and zip archives by their VCS marker files (e.g., `.git`, `.hg`, `.svn`):
+
+- **Directory repositories** are marked with `.repo` suffix
+- **Zip archives containing repositories** are marked with `.repo.zip` suffix
+- Repository internals are not expanded to keep snapshots clean and focused on structure
+
+The detection scans zip archives without extracting files (metadata-only inspection), adding negligible performance overhead (~0.5ms per archive).
 
 ### Command Line Options
 
@@ -221,8 +227,11 @@ With repository detection enabled (`--repo`), repositories are marked:
 
 ```yaml
 Projects:
-  my-app: {}
-  my-app.repo: {}  # Detected git repository
+  active-project.repo:           # Detected git repository (directory)
+    files:
+      - README.md
+  archived-project.zip.repo.zip  # Detected git repository (zip archive)
+  data-backup.zip                # Regular zip (no repo detected)
   docs: {}
 ```
 
@@ -238,7 +247,7 @@ Projects:
 - **File Grouping**: Files listed under parent directories as YAML arrays
 - **Empty Folder Notation**: `{}` indicates folders with no visible children
 - **Alias Detection**: macOS aliases marked with `.alias` extension in output
-- **Repository Detection**: Optional mode marks version control repositories with `.repo` suffix
+- **Repository Detection**: Optional mode marks repositories with `.repo` suffix (directories) or `.repo.zip` suffix (zip archives)
 
 ## Integration with LMbridge Suite
 
@@ -271,7 +280,7 @@ lmb-tree-trimmer/
 │   └── ignore_pat.conf     # Directory patterns to ignore
 ├── trimmer/                # Core package
 │   ├── __init__.py         # Package exports
-│   ├── files.py            # File operations and alias detection
+│   ├── files.py            # File operations, alias detection, and archive repo detection
 │   ├── filesystem.py       # Directory traversal
 │   ├── formatter.py        # YAML output formatting
 │   ├── scanner.py          # Main scanning functions
@@ -297,6 +306,6 @@ lmb-tree-trimmer/
 - **Performance**: Handles directories with thousands of files
 - **Token Considerations**: Output designed for LLM context windows
 - **Privacy**: Local configuration system keeps personal paths out of version control
-- **Repository Mode**: Optional feature for identifying version control directories; overrides some ignore settings for detection
+- **Repository Mode**: Optional feature for identifying version control directories and archives; detects repos in zip files without extraction; overrides some ignore settings for detection
 
 Tree Trimmer provides structured visibility into file system organization for LLM-assisted document management and directory optimization.

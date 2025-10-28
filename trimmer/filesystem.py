@@ -7,7 +7,7 @@ from config.config import COLLAPSE_CHAINS, MAX_FILES_DISPLAY, IGNORE_HIDDEN, MAX
 
 # Import functionality from other modules
 from .sorting import finder_sort_key
-from .files import is_alias, is_ignored_file, is_repo
+from .files import is_alias, is_ignored_file, is_repo, is_repo_archive
 
 def collapse_dirs(path, ignore_types, chain_so_far=None):
     """Collapse chains of single-folder directories."""
@@ -98,9 +98,10 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
     except PermissionError:
         entries = []
 
-    # Create separate lists for regular files and aliases
+    # Create separate lists for regular files, aliases, and repo archives
     regular_files = []
     alias_files = []
+    repo_archive_files = []
 
     for entry in entries:
         full_entry = os.path.join(path, entry)
@@ -115,6 +116,21 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
                 elif ignore_reason == "type":
                     stats['ignored_by_type'] = stats.get('ignored_by_type', 0) + 1
                 continue
+
+            # Check for repo archives when repo detection is enabled
+            # This happens BEFORE alias detection to prioritize repo status
+            if enable_repo and entry.lower().endswith('.zip'):
+                is_archive, repo_type = is_repo_archive(full_entry)
+                if is_archive:
+                    # Mark as repo archive with .repo.zip suffix
+                    repo_archive_name = entry + ".repo.zip"
+                    repo_archive_files.append(repo_archive_name)
+
+                    # Update statistics
+                    stats['repo_archives_detected'] = stats.get('repo_archives_detected', 0) + 1
+
+                    # Skip further processing (don't check as alias or regular file)
+                    continue
 
             # Check if the file is a macOS alias
             if is_alias(full_entry):
@@ -133,7 +149,16 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
         original_name = alias.replace('.alias', '')
         flat_lines.append(os.path.normpath(os.path.join(path, original_name)))
         stats['filtered_total_files'] = stats.get('filtered_total_files', 0) + 1
-    
+
+    # Always display all repo archives (like aliases, they're important markers)
+    # Only shown when enable_repo=True (controlled by --repo flag)
+    for repo_archive in repo_archive_files:
+        lines.append(f"{indent}  {repo_archive}")
+        # For flat_lines, strip the .repo.zip suffix to show original filename
+        original_name = repo_archive.replace('.repo.zip', '')
+        flat_lines.append(os.path.normpath(os.path.join(path, original_name)))
+        stats['filtered_total_files'] = stats.get('filtered_total_files', 0) + 1
+
     # Only apply MAX_FILES_DISPLAY limit to regular files
     if MAX_FILES_DISPLAY == 0:
         # If MAX_FILES_DISPLAY is 0, don't show regular files at all (folders-only mode)

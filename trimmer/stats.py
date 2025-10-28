@@ -16,10 +16,15 @@ def print_stats(stats, tokens, output_size):
     else:
         print(f"  By type: N/A")
     if 'repos_detected' in stats:
-        print(f"  Repos detected: {stats['repos_detected']}")
+        print(f"  Repos detected (directories): {stats['repos_detected']}")
     else:
-        print(f"  Repos detected: N/A")
-    
+        print(f"  Repos detected (directories): N/A")
+
+    if 'repo_archives_detected' in stats:
+        print(f"  Repos detected (archives): {stats['repo_archives_detected']}")
+    else:
+        print(f"  Repos detected (archives): N/A")
+
     print(f"\nEstimated tokens: {tokens:,}")
     print(f"Output size: {output_size:,} bytes")
     print(f"Token usage: {(tokens/TOKEN_LIMIT)*100:.1f}% of {TOKEN_LIMIT:,} limit")

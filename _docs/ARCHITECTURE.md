@@ -79,7 +79,8 @@ lmb-tree-trimmer/
 5. **Output Generation**
    - `formatter.py` converts processed data to YAML
    - `stats.py` calculates and reports processing metrics
-   - Write timestamped file to `_output/` directory
+   - Determine output extension based on `USE_TXT_EXTENSION` config
+   - Write timestamped file to `_output/` directory (`.txt` or `.yaml`)
 
 ### Key Data Structures
 

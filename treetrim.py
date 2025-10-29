@@ -10,6 +10,7 @@ from config.config import (
     SOURCE_DIR,
     OUTPUT_DIR,
     USE_TREE_FORMAT,
+    USE_TXT_EXTENSION,
 )
 
 # Package imports - organized by module
@@ -46,7 +47,8 @@ def main():
     # Generate dynamic output filename
     timestamp = datetime.now().strftime("%y%m%d-%H%M")
     source_name = os.path.basename(os.path.normpath(SOURCE_DIR))
-    output_filename = f"{timestamp} {source_name} structure_snapshot.yaml"
+    ext = "txt" if USE_TXT_EXTENSION else "yaml"
+    output_filename = f"{timestamp} {source_name} structure_snapshot.{ext}"
     output_path = os.path.join(OUTPUT_DIR, output_filename)
 
     # Write output to file

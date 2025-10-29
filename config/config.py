@@ -43,6 +43,9 @@ MAX_FILES_DISPLAY = 0         # If exceeded, output summary instead
 # Maximum depth to scan (0 = unlimited, 1 = only root level, 2 = root + 1 level, etc.)
 MAX_SCAN_DEPTH = 0  # 0 means unlimited depth
 
+# Toggle for output file extension
+USE_TXT_EXTENSION = True
+
 # Repository detection settings
 REPO_TYPES = {
     'git': ['.git'],

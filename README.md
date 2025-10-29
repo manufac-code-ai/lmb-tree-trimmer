@@ -165,6 +165,9 @@ TOKEN_LIMIT = 75000         # Target limit for LLM context windows
 # Depth limiting
 MAX_SCAN_DEPTH = 0          # 0 = unlimited, 5 = stop at 5 levels deep
 
+# Output file extension
+USE_TXT_EXTENSION = True    # True = .txt, False = .yaml
+
 # Repository detection (command-line controlled)
 # REPO_TYPES defines supported version control systems
 ```
@@ -245,7 +248,9 @@ Projects:
 
 ### Output Files
 
-- **Filename Format**: `YYMMDD-HHMM <source folder name> structure_snapshot.yaml`
+- **Filename Format**: `YYMMDD-HHMM <source folder name> structure_snapshot.{ext}`
+  - Extension: `.txt` (default) or `.yaml` (configurable via `USE_TXT_EXTENSION`)
+  - Content format: YAML regardless of extension
 - **Location**: `_output/` directory (configurable)
 - **Statistics**: Console output shows processing summary and token usage
 

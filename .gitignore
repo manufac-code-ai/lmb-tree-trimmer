@@ -3,6 +3,7 @@ __pycache__/
 .DS_Store
 _output/
 *.pyc
+.claude/
 
 # Local configuration files (user-specific paths)
 config/config_loc.py

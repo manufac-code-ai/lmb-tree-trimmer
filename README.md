@@ -103,21 +103,29 @@ python treetrim.py
 ### Repository Detection Mode
 
 ```bash
-# Enable repository detection to identify and mark version control repositories
+# Enable repository detection (folders-only output)
 python treetrim.py --repo
+
+# Enable repository detection with file display
+python treetrim.py --repo-files
 ```
 
-This mode detects repositories in both directories and zip archives by their VCS marker files (e.g., `.git`, `.hg`, `.svn`):
+Repository detection identifies repos in both directories and zip archives by their VCS marker files (e.g., `.git`, `.hg`, `.svn`):
 
 - **Directory repositories** are marked with `.repo` suffix
 - **Zip archives containing repositories** are marked with `.repo.zip` suffix
 - Repository internals are not expanded to keep snapshots clean and focused on structure
 
+**Mode behaviors:**
+- `--repo`: Folders-only output (files suppressed, aliases and `.repo.zip` always shown)
+- `--repo-files`: Full file display following `MAX_FILES_DISPLAY` configuration
+
 The detection scans zip archives without extracting files (metadata-only inspection), adding negligible performance overhead (~0.5ms per archive).
 
 ### Command Line Options
 
-- `--repo`: Enable repository detection mode (optional, off by default)
+- `--repo`: Enable repository detection mode with folders-only output
+- `--repo-files`: Enable repository detection with file display (mutually exclusive with `--repo`)
 
 ## Configuration
 

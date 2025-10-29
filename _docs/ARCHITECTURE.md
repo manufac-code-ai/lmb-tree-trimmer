@@ -52,7 +52,8 @@ lmb-tree-trimmer/
 1. **Initialization**
    - Load configuration from `config/config.py` and `config/config_loc.py`
    - Load ignore patterns from `config/ignore_types.conf` and `config/ignore_pat.conf`
-   - Parse command-line arguments (`--repo` flag)
+   - Parse command-line arguments (`--repo` or `--repo-files` flags, mutually exclusive)
+   - Derive internal flags: `enable_repo` and `repo_show_files`
 
 2. **Directory Scanning**
    - `treetrim.py` calls `scanner.scan_directory()`
@@ -62,14 +63,18 @@ lmb-tree-trimmer/
 3. **File Processing**
    - `filesystem.py` processes each directory entry
    - `files.py` handles file type detection and alias identification
-   - `files.py` detects repositories in zip archives when `--repo` enabled
+   - `files.py` detects repositories in zip archives when `enable_repo=True`
+   - Determine `effective_max_files` based on mode:
+     - `enable_repo=True` and `repo_show_files=False` → force 0 (folders-only)
+     - Otherwise → use `MAX_FILES_DISPLAY` configuration
    - Apply filtering based on ignore patterns and configuration
 
 4. **Repository Detection (Optional)**
-   - When `--repo` flag is used, detect VCS directories and archives
+   - When `enable_repo=True`, detect VCS directories and archives
    - Mark directory repositories with `.repo` suffix
    - Mark archive repositories with `.repo.zip` suffix
    - Skip repository internals for clean output
+   - File visibility controlled by `repo_show_files` parameter
 
 5. **Output Generation**
    - `formatter.py` converts processed data to YAML

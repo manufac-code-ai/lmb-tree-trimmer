@@ -56,7 +56,7 @@ def collapse_dirs(path, ignore_types, chain_so_far=None):
     return collapsed, path
 
 
-def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path="", enable_repo=False, inside_repo=False):  # Add enable_repo and inside_repo parameters
+def process_directory(path, ignore_types, ignore_patterns, current_indent=0, parent_path="", enable_repo=False, inside_repo=False, repo_show_files=False):
     """Process a directory and return formatted lines for tree output."""
     # Get the directory name
     basename = os.path.basename(path)
@@ -159,11 +159,19 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
         flat_lines.append(os.path.normpath(os.path.join(path, original_name)))
         stats['filtered_total_files'] = stats.get('filtered_total_files', 0) + 1
 
-    # Only apply MAX_FILES_DISPLAY limit to regular files
-    if MAX_FILES_DISPLAY == 0:
-        # If MAX_FILES_DISPLAY is 0, don't show regular files at all (folders-only mode)
+    # Determine effective file display limit
+    if enable_repo and not repo_show_files:
+        # Repo mode without files: force folders-only
+        effective_max_files = 0
+    else:
+        # Normal mode OR repo-files mode: use configured limit
+        effective_max_files = MAX_FILES_DISPLAY
+
+    # Apply file display logic using effective limit
+    if effective_max_files == 0:
+        # Folders-only mode: skip regular files
         pass
-    elif len(regular_files) > MAX_FILES_DISPLAY:
+    elif len(regular_files) > effective_max_files:
         # Show summary for regular files if they exceed the limit
         lines.append(f"{indent}  [omitted {len(regular_files)} files]")
         stats['filtered_total_files'] = stats.get('filtered_total_files', 0) + len(regular_files)
@@ -196,7 +204,7 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
                     stats['repos_detected'] = stats.get('repos_detected', 0) + 1
                     
                     # Recurse into the repo to detect nested repos, with inside_repo=True
-                    sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo, inside_repo=True)
+                    sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo, inside_repo=True, repo_show_files=repo_show_files)
                     lines.extend(sub_lines)
                     flat_lines.extend(sub_flat)
                     for key, value in sub_stats.items():
@@ -208,7 +216,7 @@ def process_directory(path, ignore_types, ignore_patterns, current_indent=0, par
                 continue  # Skip this directory
             
             # Recurse normally
-            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo, inside_repo)
+            sub_lines, sub_flat, sub_stats = process_directory(sub_path, ignore_types, ignore_patterns, current_indent + 1, path, enable_repo, inside_repo, repo_show_files)
             lines.extend(sub_lines)
             flat_lines.extend(sub_flat)
             for key, value in sub_stats.items():

@@ -20,15 +20,23 @@ from trimmer.utils import load_ignore_types, load_ignore_patterns  # Add load_ig
 
 def main():
     parser = argparse.ArgumentParser(description="Generate directory structure snapshots.")
-    parser.add_argument('--repo', action='store_true', help="Enable repository detection mode")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--repo', action='store_true',
+                       help="Enable repository detection mode (folders only)")
+    group.add_argument('--repo-files', action='store_true',
+                       help="Enable repository detection with file display")
     args = parser.parse_args()
+
+    # Derive internal flags
+    enable_repo = args.repo or args.repo_files
+    repo_show_files = args.repo_files
 
     # Load ignore types and patterns
     ignore_types = load_ignore_types()
-    ignore_patterns = load_ignore_patterns()  # Add this line
+    ignore_patterns = load_ignore_patterns()
 
     # Perform filtered scan
-    tree_lines, flat_lines, filtered_stats = scan_directory(SOURCE_DIR, ignore_types, ignore_patterns, args.repo)  # Pass repo flag
+    tree_lines, flat_lines, filtered_stats = scan_directory(SOURCE_DIR, ignore_types, ignore_patterns, enable_repo, repo_show_files)
 
     # Format output
     tree_text = format_tree_output(tree_lines)

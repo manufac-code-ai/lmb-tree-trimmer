@@ -41,7 +41,7 @@ MAX_FILES_DISPLAY = 0         # If exceeded, output summary instead
                               # Set to 0 to show only folders (no files)
 
 # Maximum depth to scan (0 = unlimited, 1 = only root level, 2 = root + 1 level, etc.)
-MAX_SCAN_DEPTH = 0  # 0 means unlimited depth
+MAX_SCAN_DEPTH = 5  # 0 means unlimited depth
 
 # Toggle for output file extension
 USE_TXT_EXTENSION = True

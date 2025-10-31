@@ -1,12 +1,26 @@
-.venv/
+# tree-trimmer .gitignore
+# Managed by developer. Do not auto-edit or remove entries without explicit confirmation.
+
+# Python basics
 __pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+env/
+
+# macOS system files
 .DS_Store
-_output/
-*.pyc
+._*
+
+# Editor and AI tooling
+.vscode/
 .claude/
 
-# Local configuration files (user-specific paths)
+# Project files and generated data
 config/config_loc.py
+_docs/
+_output/
 
 # Diff output and app
 _tools/
